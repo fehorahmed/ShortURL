@@ -72,3 +72,22 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::get('/{code}', [ShortLinkController::class, 'redirect'])
     ->where('code', '[a-zA-Z0-9_-]+')
     ->name('link.redirect');
+
+
+// Command
+Route::get('/command/migrate', function () {
+    Artisan::call('migrate:fresh --seed');
+    return 'Command executed!';
+});
+Route::get('/command/seed', function () {
+    Artisan::call('db:seed');
+    return 'Command executed!';
+});
+// clear all
+Route::get('/command/clear', function () {
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('route:clear');
+    Artisan::call('view:clear');
+    return 'Cache cleared!';
+});
