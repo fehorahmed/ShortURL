@@ -56,9 +56,16 @@
 </section>
 
 {{-- Homepage ads --}}
-@foreach($homeAds as $ad)
+{{-- @foreach($homeAds as $ad)
     <div class="text-center py-4 bg-gray-100">{!! $ad->ad_code !!}</div>
-@endforeach
+@endforeach --}}
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-3">
+    @foreach($ads as $ad)
+        <div>
+            {!! $ad->ad_code !!}
+        </div>
+    @endforeach
+</div>
 
 {{-- Features --}}
 <section class="py-16 px-4 bg-white">

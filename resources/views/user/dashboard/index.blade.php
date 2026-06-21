@@ -3,10 +3,14 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 py-8">
-
-    @foreach($ads as $ad)
-        <div class="mb-6 text-center">{!! $ad->ad_code !!}</div>
-    @endforeach
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        @foreach($ads as $ad)
+            <div class="text-center">
+                {!! $ad->ad_code !!}
+            </div>
+        @endforeach
+    </div>
 
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
