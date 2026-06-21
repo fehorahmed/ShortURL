@@ -43,6 +43,7 @@ class UserController extends Controller
             'plan_id' => 'required|exists:plans,id',
             'days'    => 'required|integer|min:1',
         ]);
+        // dd($request);
 
         $user->subscriptions()->where('status', 'active')->update(['status' => 'cancelled']);
 
@@ -50,7 +51,7 @@ class UserController extends Controller
             'user_id'    => $user->id,
             'plan_id'    => $request->plan_id,
             'starts_at'  => now(),
-            'expires_at' => now()->addDays($request->days),
+            'expires_at' => now()->addDays($request->integer('days')),
             'status'     => 'active',
         ]);
 

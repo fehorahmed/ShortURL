@@ -91,3 +91,7 @@ Route::get('/command/clear', function () {
     Artisan::call('view:clear');
     return 'Cache cleared!';
 });
+Route::get('/command/optimize', function () {
+    Artisan::call('optimize:clear');
+    return 'optimize cleared!';
+});
