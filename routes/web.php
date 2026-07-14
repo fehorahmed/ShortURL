@@ -5,6 +5,7 @@ use App\Http\Controllers\ShortLinkController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\PlanController;
 use App\Http\Controllers\Admin;
+use App\Http\Controllers\SslcommerzController;
 use Illuminate\Support\Facades\Route;
 
 // ── Public ──────────────────────────────────────────────────
@@ -72,6 +73,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 Route::get('/{code}', [ShortLinkController::class, 'redirect'])
     ->where('code', '[a-zA-Z0-9_-]+')
     ->name('link.redirect');
+
+Route::controller(SslcommerzController::class)
+    ->prefix('sslcommerz') // prefix to avoid conflicts
+    ->name('sslc.')
+    ->group(function () {
+        Route::post('success', 'success')->name('success');
+        Route::post('failure', 'failure')->name('failure');
+        Route::post('cancel', 'cancel')->name('cancel');
+        Route::post('ipn', 'ipn')->name('ipn');
+    });
+
+
 
 
 // Command

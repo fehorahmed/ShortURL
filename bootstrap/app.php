@@ -19,6 +19,10 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin'        => AdminMiddleware::class,
             'check_active' => CheckUserActive::class,
         ]);
+        // Exclude SSLCommerz webhook/callback routes from CSRF validation
+        $middleware->validateCsrfTokens(except: [
+            'sslcommerz/*',
+        ]);
     })
     ->withSchedule(function (Schedule $schedule) {
         $schedule->command('links:clean-expired')->hourly();
