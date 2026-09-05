@@ -11,8 +11,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('plan_id')->constrained()->restrictOnDelete();
-            $table->timestamp('starts_at');
-            $table->timestamp('expires_at');
+            $table->dateTime('starts_at');
+            $table->dateTime('expires_at');
             $table->enum('status', ['active', 'expired', 'cancelled'])->default('active');
             $table->timestamps();
         });
