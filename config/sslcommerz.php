@@ -2,44 +2,32 @@
 
 declare(strict_types=1);
 
-// config for Raziul/Sslcommerz
-
 return [
-    /**
-     * Enable/Disable Sandbox mode
+    /*
+     * Enable sandbox/test mode.
+     * Set to false when going live.
      */
     'sandbox' => env('SSLC_SANDBOX', true),
 
-    /**
-     * The API credentials given from SSLCommerz
+    /*
+     * API credentials from your SSLCommerz merchant panel.
      */
     'store' => [
-        'id' => env('SSLC_STORE_ID'),
+        'id'       => env('SSLC_STORE_ID'),
         'password' => env('SSLC_STORE_PASSWORD'),
         'currency' => env('SSLC_STORE_CURRENCY', 'BDT'),
     ],
 
-    /**
-     * Route names for success/failure/cancel
+    /*
+     * These route names must match the routes defined in routes/web.php.
+     * SSLCommerz will POST to these URLs after payment.
      */
     'route' => [
         'success' => env('SSLC_ROUTE_SUCCESS', 'sslc.success'),
         'failure' => env('SSLC_ROUTE_FAILURE', 'sslc.failure'),
-        'cancel' => env('SSLC_ROUTE_CANCEL', 'sslc.cancel'),
-        'ipn' => env('SSLC_ROUTE_IPN', 'sslc.ipn'),
+        'cancel'  => env('SSLC_ROUTE_CANCEL',  'sslc.cancel'),
+        'ipn'     => env('SSLC_ROUTE_IPN',     'sslc.ipn'),
     ],
 
-    /**
-     * Product profile required from SSLC
-     * By default it is "general"
-     *
-     * AVAILABLE PROFILES
-     *  general
-     *  physical-goods
-     *  non-physical-goods
-     *  airline-tickets
-     *  travel-vertical
-     *  telecom-vertical
-     */
     'product_profile' => 'general',
 ];

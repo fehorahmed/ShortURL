@@ -2,110 +2,144 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Raziul\Sslcommerz\Facades\Sslcommerz;
 use App\Models\Payment;
 use App\Models\Subscription;
+use Illuminate\Http\Request;
+use Raziul\Sslcommerz\Facades\Sslcommerz;
 
 class SslcommerzController extends Controller
 {
-    public function initiatePayment()
-    {
-        $post_data = [
-            'total_amount' => '1000',
-            'currency' => 'BDT',
-            'tran_id' => uniqid('SSLC_', true), // Generate unique tracking ID
-
-            // Callback URLs matching your defined routes
-            'success_url' => url('/pay-success'),
-            'fail_url' => url('/pay-fail'),
-            'cancel_url' => url('/pay-cancel'),
-            'ipn_url' => url('/pay-ipn'),
-
-            // Customer Details (Mandatory fields)
-            'cus_name' => 'John Doe',
-            'cus_email' => 'john.doe@example.com',
-            'cus_add1' => 'Dhaka',
-            'cus_city' => 'Dhaka',
-            'cus_country' => 'Bangladesh',
-            'cus_phone' => '01700000000',
-
-            // Shipping & Product Details
-            'shipping_method' => 'NO',
-            'product_name' => 'Computer',
-            'product_category' => 'Electronics',
-            'product_profile' => 'general',
-        ];
-
-        // Requests token from SSLCommerz and redirects the user
-        $paymentUrl = Sslcommerz::initiatePayment($post_data);
-
-        return redirect()->to($paymentUrl);
-    }
-
+    /**
+     * SSLCommerz POSTs here after successful payment.
+     * Note: user session is NOT available here (server-to-server POST).
+     * We identify the user via the payment record using tran_id.
+     */
     public function success(Request $request)
     {
-        // dd($request->all()); // For debugging, you can log or inspect the request data
-        // Capture transaction ID from the payload
-        $tran_id = $request->input('tran_id');
-        $amount = $request->input('amount');
+        $tranId   = $request->input('tran_id');
+        $amount   = $request->input('amount');
         $currency = $request->input('currency');
 
-        // Always validate the transaction signature with SSLCommerz servers
-        $validation = Sslcommerz::validatePayment($request->all(), $tran_id, $amount, $currency);
+        // Validate with SSLCommerz servers
+        $isValid = Sslcommerz::validatePayment($request->all(), $tranId, $amount, $currency);
 
-        if ($validation) {
-            // Transaction verified. Update database record to 'Paid'
-            $payment = Payment::where('transaction_id', $tran_id)->first();
-            if ($payment) {
-                // $payment->update(['status' => 'completed']);
-                $payment->update([
-                    'status' => 'completed',
-                    'gateway_response' => $request->all(),
-                ]);
-                // dd(auth()->user());
-                auth()->user()->subscriptions()
-                    ->where('status', 'active')
-                    ->update(['status' => 'cancelled']);
-
-                $sub = Subscription::create([
-                    'user_id' => $payment->user_id,
-                    'plan_id' => $payment->plan_id,
-                    'starts_at' => now(),
-                    'expires_at' => now()->addDays($payment->plan->duration_days),
-                    'status' => 'active',
-                ]);
-
-                $payment->update(['subscription_id' => $sub->id]);
-            }
-            return response()->json(['status' => 'Success', 'message' => 'Payment Completed Successfully.']);
+        if (! $isValid) {
+            return redirect()->route('user.plans')
+                ->with('error', 'Payment validation failed. Contact support with Tran ID: ' . $tranId);
         }
 
-        return response()->json(['status' => 'Failed', 'message' => 'Validation mismatched.']);
+        $payment = Payment::where('transaction_id', $tranId)
+            ->where('status', 'pending')
+            ->with('plan')
+            ->first();
+
+        if (! $payment) {
+            // Already processed (IPN may have handled it first) — just redirect to dashboard
+            return redirect()->route('user.dashboard')
+                ->with('success', 'Payment already processed. Your plan is active.');
+        }
+
+        // Mark payment completed
+        $payment->update([
+            'status'           => 'completed',
+            'gateway_response' => $request->all(),
+        ]);
+
+        // Cancel any existing active subscription for this user
+        Subscription::where('user_id', $payment->user_id)
+            ->where('status', 'active')
+            ->update(['status' => 'cancelled']);
+
+        // Create new subscription
+        $sub = Subscription::create([
+            'user_id'    => $payment->user_id,
+            'plan_id'    => $payment->plan_id,
+            'starts_at'  => now(),
+            'expires_at' => now()->addDays($payment->plan->duration_days),
+            'status'     => 'active',
+        ]);
+
+        $payment->update(['subscription_id' => $sub->id]);
+
+        return redirect()->route('user.dashboard')
+            ->with('success', 'Payment successful! Your ' . $payment->plan->name . ' plan is now active.');
     }
 
+    /**
+     * SSLCommerz POSTs here on payment failure.
+     */
     public function failure(Request $request)
     {
-        return response()->json(['status' => 'Failed', 'message' => 'Payment Transaction Failed.']);
+        $tranId = $request->input('tran_id');
+
+        Payment::where('transaction_id', $tranId)
+            ->where('status', 'pending')
+            ->update(['status' => 'failed']);
+
+        return redirect()->route('user.plans')
+            ->with('error', 'Payment failed. Please try again.');
     }
 
-    public function cancel()
+    /**
+     * SSLCommerz POSTs here when user cancels.
+     */
+    public function cancel(Request $request)
     {
-        return response()->json(['status' => 'Cancelled', 'message' => 'User Cancelled Payment.']);
+        $tranId = $request->input('tran_id');
+
+        Payment::where('transaction_id', $tranId)
+            ->where('status', 'pending')
+            ->update(['status' => 'failed']);
+
+        return redirect()->route('user.plans')
+            ->with('error', 'Payment cancelled.');
     }
 
+    /**
+     * Instant Payment Notification — server-to-server background call.
+     * This fires even if the user closes the browser.
+     * Must return HTTP 200 plain text.
+     */
     public function ipn(Request $request)
     {
-        // Instant Payment Notification handler (Server-to-Server communication)
-        $tran_id = $request->input('tran_id');
-        $amount = $request->input('amount');
+        $tranId   = $request->input('tran_id');
+        $amount   = $request->input('amount');
         $currency = $request->input('currency');
 
-        if (Sslcommerz::validatePayment($tran_id, $amount, $currency, $request->all())) {
-            // Safely update transaction status on background disconnects
-            return response('Valid IPN Received', 200);
+        // Correct argument order: (data, tran_id, amount, currency)
+        if (! Sslcommerz::validatePayment($request->all(), $tranId, $amount, $currency)) {
+            return response('Invalid IPN', 400);
         }
 
-        return response('Invalid IPN', 400);
+        $payment = Payment::where('transaction_id', $tranId)
+            ->where('status', 'pending')
+            ->with('plan')
+            ->first();
+
+        if (! $payment) {
+            // Already handled by success callback
+            return response('Already processed', 200);
+        }
+
+        $payment->update([
+            'status'           => 'completed',
+            'gateway_response' => $request->all(),
+        ]);
+
+        Subscription::where('user_id', $payment->user_id)
+            ->where('status', 'active')
+            ->update(['status' => 'cancelled']);
+
+        $sub = Subscription::create([
+            'user_id'    => $payment->user_id,
+            'plan_id'    => $payment->plan_id,
+            'starts_at'  => now(),
+            'expires_at' => now()->addDays($payment->plan->duration_days),
+            'status'     => 'active',
+        ]);
+
+        $payment->update(['subscription_id' => $sub->id]);
+
+        return response('IPN processed', 200);
     }
 }
