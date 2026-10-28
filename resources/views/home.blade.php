@@ -1,6 +1,23 @@
 @extends('layouts.app')
 @section('title', 'ShortURL — Shorten, Share & Track Links')
-
+{{-- @push('head')
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "ShortURL",
+            "url": "{{ config('app.url') }}",
+            "description": "Free URL shortener with analytics and custom aliases",
+            "applicationCategory": "UtilitiesApplication",
+            "operatingSystem": "Web",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "BDT"
+            }
+        }
+</script>
+@endpush --}}
 @section('content')
 
     {{-- Hero --}}
@@ -62,7 +79,7 @@
     {{-- Homepage ads --}}
     {{-- @foreach ($homeAds as $ad)
     <div class="text-center py-4 bg-gray-100">{!! $ad->ad_code !!}</div>
-@endforeach --}}
+    @endforeach --}}
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-3">
         @foreach ($homeAds as $ad)
             <div>

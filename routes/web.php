@@ -72,6 +72,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
 });
 
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 // ── Short URL Redirect (must be LAST) ───────────────────────
 Route::get('/{code}', [ShortLinkController::class, 'redirect'])
     ->where('code', '[a-zA-Z0-9_-]+')
