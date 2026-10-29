@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Advertisement;
 use App\Models\ShortLink;
+use App\Models\Setting;
 use App\Services\LinkService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -65,10 +66,15 @@ class ShortLinkController extends Controller
         $this->linkService->recordClick($link, $request);
 
         $plan = $link->user?->currentPlan();
-
+        $setting = Setting::where('key', 'redirect_wait_seconds')->first();
         if (!$plan || $plan->show_ads) {
             $ads           = Advertisement::forPlacement('redirect_page');
-            $waitSeconds   = 5;
+            $waitSeconds   = $setting ? (int) $setting->value : 5;
+
+            if ($waitSeconds === 0) {
+                return redirect()->away($link->original_url);
+            }
+
             return view('redirect', compact('link', 'ads', 'waitSeconds'));
         }
 
