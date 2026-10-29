@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'ShortURL')</title>
+    <title>@yield('title', 'Short URL')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- favicon --}}
     <link rel="icon" href="{{ asset('fav.png') }}" type="image/x-icon">
@@ -14,7 +14,7 @@
 
 <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-        <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">⚡ ShortURL</a>
+        <a href="{{ route('home') }}" class="text-xl font-bold text-indigo-600">⚡ Short URL</a>
         <div class="flex items-center gap-4">
             @auth
                 <a href="{{ route('user.dashboard') }}" class="text-sm text-gray-600 hover:text-indigo-600">Dashboard</a>

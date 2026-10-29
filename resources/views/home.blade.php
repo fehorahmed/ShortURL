@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'ShortURL — Shorten, Share & Track Links')
+@section('title', 'Short URL — Shorten, Share & Track Links')
 {{-- @push('head')
     <script type="application/ld+json">
         {
