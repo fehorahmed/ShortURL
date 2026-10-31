@@ -70,7 +70,7 @@
 
                     @guest
                         <p class="text-gray-400 text-xs mt-3">
-                            No account needed. Links expire in 30 days.
+                            No account needed.
                             <a href="{{ route('register') }}" class="text-indigo-600 hover:underline">Sign up for longer links
                                 →</a>
                         </p>

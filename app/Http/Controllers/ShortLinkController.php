@@ -26,7 +26,7 @@ class ShortLinkController extends Controller
             return back()->with('error', 'You have reached your plan\'s link limit. Please upgrade.');
         }
 
-        $expiryDays = $user ? $user->linkExpiryDays() : 30;
+        $expiryDays = $user ? $user->linkExpiryDays() : 365; // Default expiry for guests is 365 days
         $plan       = $user?->currentPlan();
 
         $alias = null;
