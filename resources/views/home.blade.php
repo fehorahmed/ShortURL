@@ -1,23 +1,6 @@
 @extends('layouts.app')
 @section('title', 'Short URL — Shorten, Share & Track Links')
-{{-- @push('head')
-    <script type="application/ld+json">
-        {
-            "@context": "https://schema.org",
-            "@type": "WebApplication",
-            "name": "ShortURL",
-            "url": "{{ config('app.url') }}",
-            "description": "Free URL shortener with analytics and custom aliases",
-            "applicationCategory": "UtilitiesApplication",
-            "operatingSystem": "Web",
-            "offers": {
-                "@type": "Offer",
-                "price": "0",
-                "priceCurrency": "BDT"
-            }
-        }
-</script>
-@endpush --}}
+
 @section('content')
 
     {{-- Hero --}}
