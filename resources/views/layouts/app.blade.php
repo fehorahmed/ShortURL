@@ -15,7 +15,7 @@
 
     <meta name="description" content="Free URL short with analytics and custom aliases">
     <meta name="keywords"
-        content="url shortener, link shortener,url short, link short, short url, short link, free URL shortener, custom aliases, analytics, link management">
+        content="shorturl, url shortener, link shortener,url short, link short, short url, short link, free URL shortener, custom aliases, analytics, link management">
 
     @stack('head')
 </head>
