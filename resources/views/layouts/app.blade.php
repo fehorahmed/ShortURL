@@ -17,26 +17,6 @@
     <meta name="keywords"
         content="url shortener, link shortener,url short, link short, short url, short link, free URL shortener, custom aliases, analytics, link management">
 
-    @php
-        $schema = [
-            '@context' => 'https://schema.org',
-            '@type' => 'WebApplication',
-            'name' => 'ShortURL',
-            'url' => config('app.url'),
-            'description' => 'Free URL short or link short with analytics and custom aliases',
-            'applicationCategory' => 'UtilitiesApplication',
-            'operatingSystem' => 'Web',
-            'offers' => [
-                '@type' => 'Offer',
-                'price' => '0',
-                'priceCurrency' => 'BDT',
-            ],
-        ];
-    @endphp
-
-    <script type="application/ld+json">
-    @json($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
-    </script>
     @stack('head')
 </head>
 

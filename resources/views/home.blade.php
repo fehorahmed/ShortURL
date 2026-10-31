@@ -1,6 +1,27 @@
 @extends('layouts.app')
 @section('title', 'Short URL — Shorten, Share & Track Links')
+@push('head')
+     @php
+        $schema = [
+            '@context' => 'https://schema.org',
+            '@type' => 'WebApplication',
+            'name' => 'ShortURL',
+            'url' => config('app.url'),
+            'description' => 'Free URL short or link short with analytics and custom aliases',
+            'applicationCategory' => 'UtilitiesApplication',
+            'operatingSystem' => 'Web',
+            'offers' => [
+                '@type' => 'Offer',
+                'price' => '0',
+                'priceCurrency' => 'BDT',
+            ],
+        ];
+    @endphp
 
+    <script type="application/ld+json">
+    @json($schema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+    </script>
+@endpush
 @section('content')
 
     {{-- Hero --}}
