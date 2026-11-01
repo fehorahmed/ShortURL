@@ -5,4 +5,4 @@ Disallow: /dashboard/
 Disallow: /dashboard/links
 Disallow: /payment/
 
-Sitemap: https://yourdomain.com/sitemap.xml
+Sitemap: https://urlshort.info/sitemap.xml
