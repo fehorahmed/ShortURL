@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta name="robots" content="index, follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Short URL')</title>
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -16,7 +17,7 @@
     <meta name="description" content="Free URL short with analytics and custom aliases">
     <meta name="keywords"
         content="shorturl, url shortener, link shortener,url short, link short, short url, short link, free URL shortener, custom aliases, analytics, link management">
-
+    <meta name="author" content="ShortURL Team">
     @stack('head')
 </head>
 

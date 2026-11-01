@@ -6,7 +6,7 @@
     <meta name="description" content="Create a free ShortURL account to shorten links, track analytics, and access premium features.">
     <meta name="keywords" content="ShortURL, register, sign up, URL shortener, link management">
     <meta name="author" content="ShortURL Team">
-    <meta name="robots" content="noindex, nofollow">
+    {{-- <meta name="robots" content="noindex, nofollow"> --}}
     <title>Register — ShortURL</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
