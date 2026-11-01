@@ -4,6 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Reset your ShortURL account password by entering your email address. We will send you a password reset link to regain access to your account.">
+    <meta name="keywords" content="ShortURL, forgot password, reset password, URL shortener, link management">
+    <meta name="author" content="ShortURL Team">
+    <meta name="robots" content="noindex, nofollow">
     <title>Forgot Password — ShortURL</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>

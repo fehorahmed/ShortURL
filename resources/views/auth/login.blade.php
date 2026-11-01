@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign in to your ShortURL account to manage your links, view analytics, and access premium features.">
+    <meta name="keywords" content="ShortURL, login, sign in, URL shortener, link management">
+    <meta name="author" content="ShortURL Team">
+    <meta name="robots" content="noindex, nofollow">
     <title>Login — ShortURL</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
