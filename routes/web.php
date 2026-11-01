@@ -5,6 +5,7 @@ use App\Http\Controllers\ShortLinkController;
 use App\Http\Controllers\SslcommerzController;
 use App\Http\Controllers\User\DashboardController;
 use App\Http\Controllers\User\PlanController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\Admin;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
